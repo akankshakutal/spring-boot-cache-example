@@ -2,11 +2,6 @@ package com.example.caching;
 
 import javafx.util.Pair;
 import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
@@ -15,45 +10,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
-
-@Configuration
-@EnableCaching
-class CachingApplicationConfiguration {
-    @Bean
-    public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager() {
-            @Override
-            protected Cache createConcurrentMapCache(String name) {
-                return new ConcurrentMapCollectionHandlingDecoratedCache(super.createConcurrentMapCache(name));
-            }
-        };
-    }
-
-    @Bean
-    BookRepository bookRepository() {
-        return new SimpleBookRepository();
-    }
-}
-
-class ConcurrentMapCollectionHandlingDecoratedCache extends CollectionHandlingDecoratedCache {
-
-    protected ConcurrentMapCollectionHandlingDecoratedCache(final Cache cache) {
-        super(cache);
-    }
-
-    @Override
-    @SuppressWarnings("all")
-    protected boolean areAllKeysPresentInCache(Iterable<?> keys) {
-
-        ConcurrentMap nativeCache = (ConcurrentMap) getNativeCache();
-
-        return StreamSupport.stream(keys.spliterator(), false).allMatch(nativeCache::containsKey);
-    }
-}
 
 abstract class CollectionHandlingDecoratedCache implements Cache {
 
@@ -122,7 +81,7 @@ abstract class CollectionHandlingDecoratedCache implements Cache {
                 String.format("Expected return type [%1$s] must be Iterable when querying multiple keys [%2$s]",
                     type.getName(), key));
 
-            return (T) Optional.ofNullable(get(key)).map(Cache.ValueWrapper::get).orElse(null);
+            return (T) Optional.ofNullable(get(key)).map(ValueWrapper::get).orElse(null);
         }
 
         return getCache().get(key, type);
