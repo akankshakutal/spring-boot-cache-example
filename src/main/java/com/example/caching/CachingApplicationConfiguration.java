@@ -19,9 +19,4 @@ class CachingApplicationConfiguration {
             }
         };
     }
-
-    @Bean
-    BookRepository bookRepository() {
-        return new SimpleBookRepository();
-    }
 }
