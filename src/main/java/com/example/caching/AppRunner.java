@@ -18,6 +18,9 @@ public class AppRunner implements CommandLineRunner {
     private final BookRepository bookRepository;
 
     @Autowired
+    private CachingService cachingService;
+
+    @Autowired
     private ApplicationContext context;
 
     public AppRunner(BookRepository bookRepository) {
@@ -27,18 +30,21 @@ public class AppRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         var values = List.of("isbn-1234", "isbn-4567");
+        List<Book> allBooks = bookRepository.getAllBooks(values);
+
+        cachingService.setBooks(allBooks);
 
         logger.info(".... Fetching books");
 
-        logger.info("All books -->" + bookRepository.getAllBooks(values));
-        logger.info("isCacheMiss -->" + bookRepository.isCacheMiss());
+        logger.info("All books -->" + cachingService.cacheBooksData(values));
+        logger.info("isCacheMiss -->" + cachingService.isCacheMiss());
 
-        logger.info("isbn-1234 -->" + bookRepository.getByIsbn("isbn-1234"));
-        logger.info("isbn-1234 -->" + bookRepository.getByIsbn("isbn-4567"));
-        logger.info("isCacheMiss -->" + bookRepository.isCacheMiss());
+        logger.info("isbn-1234 -->" + cachingService.CacheBookData("isbn-1234"));
+        logger.info("isbn-1234 -->" + cachingService.CacheBookData("isbn-4567"));
+        logger.info("isCacheMiss -->" + cachingService.isCacheMiss());
 
-        logger.info("isbn-1234 -->" + bookRepository.getByIsbn("isbn-2345"));
-        logger.info("isCacheMiss -->" + bookRepository.isCacheMiss());
+        logger.info("isbn-1234 -->" + cachingService.CacheBookData("isbn-2345"));
+        logger.info("isCacheMiss -->" + cachingService.isCacheMiss());
 
         CacheManager cacheManager = (CacheManager) context.getBean("cacheManager");
         Object books = cacheManager.getCache("books").getNativeCache();
