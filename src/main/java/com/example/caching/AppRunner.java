@@ -39,7 +39,7 @@ public class AppRunner implements CommandLineRunner {
         logger.info("isCacheMiss -->" + bookRepository.isCacheMiss());
 
         cacheManager.getCache("books").clear();
-        
+
         logger.info("isbn-1234 -->" + bookRepository.getByIsbn("isbn-2345"));
         logger.info("isCacheMiss -->" + bookRepository.isCacheMiss());
 

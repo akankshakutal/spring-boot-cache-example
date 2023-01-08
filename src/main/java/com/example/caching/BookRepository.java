@@ -12,17 +12,15 @@ public class BookRepository {
 
     private boolean cacheMiss;
 
-    public synchronized void setCacheMiss(boolean cacheMiss) {
-        this.cacheMiss = cacheMiss;
-    }
-
-
     public synchronized boolean isCacheMiss() {
         boolean cacheMiss = this.cacheMiss;
         setCacheMiss(false);
         return cacheMiss;
     }
 
+    public synchronized void setCacheMiss(boolean cacheMiss) {
+        this.cacheMiss = cacheMiss;
+    }
 
     @Cacheable(value = "books")
     public Book getByIsbn(String isbn) {
