@@ -1,7 +1,6 @@
 package com.example.caching;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -20,15 +19,14 @@ public class CachingService {
         this.books = books;
     }
 
-    public synchronized void setCacheMiss(boolean cacheMiss) {
-        this.cacheMiss = cacheMiss;
-    }
-
-
     public synchronized boolean isCacheMiss() {
         boolean cacheMiss = this.cacheMiss;
         setCacheMiss(false);
         return cacheMiss;
+    }
+
+    public synchronized void setCacheMiss(boolean cacheMiss) {
+        this.cacheMiss = cacheMiss;
     }
 
     @Cacheable(value = "books")

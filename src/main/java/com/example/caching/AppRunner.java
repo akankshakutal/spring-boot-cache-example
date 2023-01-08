@@ -53,7 +53,7 @@ public class AppRunner implements CommandLineRunner {
         logger.info("isCacheMiss -->" + cachingService.isCacheMiss());
 
         cacheManager.getCache("books").clear();
-        
+
         cachingService.setBooks(allBooks1);
         logger.info("All books -->" + cachingService.cacheBooksData(values1));
         logger.info("isCacheMiss -->" + cachingService.isCacheMiss());
