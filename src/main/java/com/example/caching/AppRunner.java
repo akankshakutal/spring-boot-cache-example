@@ -27,6 +27,7 @@ public class AppRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         var values = List.of("isbn-1234", "isbn-4567");
+        CacheManager cacheManager = (CacheManager) context.getBean("cacheManager");
 
         logger.info(".... Fetching books");
 
@@ -37,10 +38,11 @@ public class AppRunner implements CommandLineRunner {
         logger.info("isbn-1234 -->" + bookRepository.getByIsbn("isbn-4567"));
         logger.info("isCacheMiss -->" + bookRepository.isCacheMiss());
 
+        cacheManager.getCache("books").clear();
+        
         logger.info("isbn-1234 -->" + bookRepository.getByIsbn("isbn-2345"));
         logger.info("isCacheMiss -->" + bookRepository.isCacheMiss());
 
-        CacheManager cacheManager = (CacheManager) context.getBean("cacheManager");
         Object books = cacheManager.getCache("books").getNativeCache();
 
         logger.info("****************************" + books);
